@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Transfers a file to a remote server using scp, fully automated for project 0
+
+# Usage function
+usage() {
+    echo "Usage: $0 PATH_TO_FILE HOST USERNAME PATH_TO_SSH_KEY [PORT]"
+    exit 1
+}
+
+# Check number of parameters
+if [ "$#" -lt 4 ]; then
+    usage
+fi
+
+FILE_PATH="$1"
+HOST="$2"
+USERNAME="$3"
+SSH_KEY="$4"
+PORT="${5:-22}"  # Default to port 22 if not specified
+
+# Check if the file to transfer exists
+if [ ! -f "$FILE_PATH" ]; then
+    echo "Error: file '$FILE_PATH' does not exist."
+    exit 1
+fi
+
+# Check if the SSH key exists
+if [ ! -f "$SSH_KEY" ]; then
+    echo "Error: SSH key '$SSH_KEY' does not exist."
+    exit 1
+fi
+
+# Ensure correct permissions on the SSH key
+chmod 600 "$SSH_KEY"
+
+# Transfer the file to the user's home directory
+scp -P "$PORT" -o StrictHostKeyChecking=no -i "$SSH_KEY" "$FILE_PATH" "$USERNAME@$HOST:~/""
