@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Installs Nginx and configures it to serve a page containing "Holberton School"
+
+# Update package list and install nginx without prompts
+apt-get update -y
+apt-get install nginx -y
+
+# Make sure nginx is started (no systemctl)
+service nginx start 2>/dev/null || /etc/init.d/nginx start 2>/dev/null
+
+# Configure default Nginx page to contain "Holberton School"
+echo "Holberton School" > /var/www/html/index.html
+
+# Ensure nginx listens on port 80 (default config usually already does this)
+sed -i 's/listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
+
+# Reload nginx configuration without systemctl
+nginx -s reload 2>/dev/null || /etc/init.d/nginx reload 2>/dev/null
