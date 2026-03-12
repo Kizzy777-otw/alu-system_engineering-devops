@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
-# Configure nginx with a custom 404 page
+# Install nginx, setup root index, redirect, and custom 404 page
 
-# 1. Install nginx
 apt-get update -y
 apt-get install -y nginx
 
-# 2. Create the custom 404 page
+# Root page (task 1)
+echo "Holberton School for the win!" > /var/www/html/index.nginx-debian.html
+
+# Custom 404 page (task 4)
 echo "Ceci n'est pas une page" > /var/www/html/404.html
 
-# 3. Update nginx default site to use custom 404
+# Nginx config
 cat <<EOF > /etc/nginx/sites-available/default
 server {
     listen 80 default_server;
@@ -17,7 +19,7 @@ server {
     root /var/www/html;
     index index.nginx-debian.html;
 
-    # Redirect /redirect_me (optional if you want to keep task 3)
+    # Redirect (task 3)
     location /redirect_me {
         return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
     }
@@ -31,5 +33,5 @@ server {
 }
 EOF
 
-# 4. Restart nginx without systemctl
+# Restart nginx
 service nginx restart
