@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # Installs and configures nginx to serve the required content on port 80.
 
-set -e
-
 apt-get -y update
 apt-get -y install nginx
 
