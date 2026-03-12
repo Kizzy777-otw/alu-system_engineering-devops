@@ -1,31 +1,29 @@
 #!/usr/bin/env bash
-# Replace a line with mutliple lines with sed
+# Configure nginx to redirect /redirect_me with 301
 
-set -e
+# Install nginx
+apt-get update -y
+apt-get install -y nginx
 
-apt-get -y update
-apt-get -y install nginx
-
-echo "Holberton School for the win!" > /var/www/html/index.html
-echo "Holberton School for the win!" > /var/www/html/index.nginx-debian.html
-
-cat <<'EOF' > /etc/nginx/sites-available/default
+# Set up default site
+cat <<EOF > /etc/nginx/sites-available/default
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
 
     root /var/www/html;
-    index index.html index.htm index.nginx-debian.html;
-    server_name _;
+    index index.nginx-debian.html;
 
+    # 301 redirect for /redirect_me
     location /redirect_me {
         return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
     }
 
     location / {
-        try_files $uri $uri/ =404;
+        try_files \$uri \$uri/ =404;
     }
 }
 EOF
 
-service nginx restart || service nginx start
+# Restart nginx
+service nginx restart
