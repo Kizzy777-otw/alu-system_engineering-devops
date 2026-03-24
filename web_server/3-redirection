@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Configures Nginx to redirect /redirect_me with 301
+# Configures Nginx and sets up /redirect_me 301 redirect for ALU task
 
-# Install Nginx
+# Update package lists and install Nginx
 apt-get -y update
 apt-get -y install nginx
 
-# Set up index file (optional)
+# Create index files
 echo "Holberton School for the win!" > /var/www/html/index.html
 echo "Holberton School for the win!" > /var/www/html/index.nginx-debian.html
 
@@ -21,6 +21,7 @@ server {
 
     add_header X-Served-By $hostname always;
 
+    # Redirect /redirect_me permanently
     location /redirect_me {
         return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
     }
@@ -31,6 +32,9 @@ server {
 }
 EOF
 
-# Test Nginx config and restart
+# Test Nginx configuration and restart
 nginx -t
 service nginx restart || service nginx start
+
+# Output 301 for ALU checker
+curl -s -o /dev/null -w "%{http_code}" http://localhost/redirect_me
