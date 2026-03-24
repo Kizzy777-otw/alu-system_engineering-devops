@@ -1,29 +1,36 @@
 #!/usr/bin/env bash
-# Configure nginx to redirect /redirect_me with 301
+# Configures Nginx to redirect /redirect_me with 301
 
-# Install nginx
-apt-get update -y
-apt-get install -y nginx
+# Install Nginx
+apt-get -y update
+apt-get -y install nginx
 
-# Set up default site
-cat <<EOF > /etc/nginx/sites-available/default
+# Set up index file (optional)
+echo "Holberton School for the win!" > /var/www/html/index.html
+echo "Holberton School for the win!" > /var/www/html/index.nginx-debian.html
+
+# Configure default site with /redirect_me 301 redirect
+cat <<'EOF' > /etc/nginx/sites-available/default
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
 
     root /var/www/html;
-    index index.nginx-debian.html;
+    index index.html index.htm index.nginx-debian.html;
+    server_name _;
 
-    # 301 redirect for /redirect_me
+    add_header X-Served-By $hostname always;
+
     location /redirect_me {
         return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
     }
 
     location / {
-        try_files \$uri \$uri/ =404;
+        try_files $uri $uri/ =404;
     }
 }
 EOF
 
-# Restart nginx
-service nginx restart
+# Test Nginx config and restart
+nginx -t
+service nginx restart || service nginx start
